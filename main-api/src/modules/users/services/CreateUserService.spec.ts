@@ -1,17 +1,24 @@
 import AppError from '@shared/errors/AppError';
-import FakeUsersRepository from '../repositories/fakes/FakeUsersRepository';
+import FakeMailProvider from '@shared/container/providers/MailProvider/fakes/FakeMailProvider';
 import FakeHashProvider from '../providers/HashProvider/fakes/FakeHashProvider';
+import FakeUsersRepository from '../repositories/fakes/FakeUsersRepository';
 import CreateUserService from './CreateUserService';
 
-let fakeUsersRepository: FakeUsersRepository;
+let fakeMailProvider: FakeMailProvider;
 let fakeHashProvider: FakeHashProvider;
+let fakeUsersRepository: FakeUsersRepository;
 let createUser: CreateUserService;
 
 describe('CreateUser', () => {
   beforeEach(() => {
-    fakeUsersRepository = new FakeUsersRepository();
+    fakeMailProvider = new FakeMailProvider();
     fakeHashProvider = new FakeHashProvider();
-    createUser = new CreateUserService(fakeUsersRepository, fakeHashProvider);
+    fakeUsersRepository = new FakeUsersRepository();
+    createUser = new CreateUserService(
+      fakeUsersRepository,
+      fakeHashProvider,
+      fakeMailProvider,
+    );
   });
 
   it('Should be able to create a new user.', async () => {

@@ -1,22 +1,31 @@
 import AppError from '@shared/errors/AppError';
-import FakeUsersRepository from '../repositories/fakes/FakeUsersRepository';
-import FakeHashProvider from '../providers/HashProvider/fakes/FakeHashProvider';
-import User from '../infra/typeorm/entities/User';
-import CreateUserService from './CreateUserService';
-import AuthenticateUserService from './AuthenticateUserService';
 
-let fakeUsersRepository: FakeUsersRepository;
+import FakeMailProvider from '@shared/container/providers/MailProvider/fakes/FakeMailProvider';
+import FakeHashProvider from '../providers/HashProvider/fakes/FakeHashProvider';
+import FakeUsersRepository from '../repositories/fakes/FakeUsersRepository';
+import AuthenticateUserService from './AuthenticateUserService';
+import CreateUserService from './CreateUserService';
+import User from '../infra/typeorm/entities/User';
+
+let fakeMailProvider: FakeMailProvider;
 let fakeHashProvider: FakeHashProvider;
-let user: User;
-let createUser: CreateUserService;
+let fakeUsersRepository: FakeUsersRepository;
 let authenticateUser: AuthenticateUserService;
+let createUser: CreateUserService;
+let user: User;
 
 describe('Authenticate User', () => {
   beforeEach(async () => {
-    fakeUsersRepository = new FakeUsersRepository();
+    fakeMailProvider = new FakeMailProvider();
     fakeHashProvider = new FakeHashProvider();
+    fakeUsersRepository = new FakeUsersRepository();
 
-    createUser = new CreateUserService(fakeUsersRepository, fakeHashProvider);
+    createUser = new CreateUserService(
+      fakeUsersRepository,
+      fakeHashProvider,
+      fakeMailProvider,
+    );
+
     authenticateUser = new AuthenticateUserService(
       fakeUsersRepository,
       fakeHashProvider,
