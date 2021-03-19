@@ -1,37 +1,36 @@
 import ejs from 'ejs';
 import nodemailer from 'nodemailer';
-import { transporterConfig } from '../../config/EmailConfig';
-import { templateError, defaultError } from '../../utils/ErrorsConfig';
-import {
-  getEmailData,
-  getEmailConfig,
-  getEmailTemplate,
-} from '../repositories/EmailRepository';
+import transporterConfig from '../../config/email';
+import emailRepository from '../repositories/EmailRepository';
+import { templateError, defaultError } from '../../errors/messages';
 
-async function create(request, response) {
-  const { user_id, type, to } = request.body;
+class EmailController {
+  async create(request, response) {
+    const { id } = request.params;
+    const { template } = request.body;
 
-  const emailConfig = getEmailConfig(type);
-  if (!emailConfig) {
-    return response.status(templateError.status).json(templateError.message);
-  }
+    const emailConfig = emailRepository.getEmailConfig(template);
+    if (!emailConfig) {
+      return response.status(templateError.status).json(templateError.message);
+    }
 
-  const emailTemplate = getEmailTemplate(type);
-  const transporter = nodemailer.createTransport(transporterConfig);
+    const emailTemplate = emailRepository.getEmailTemplate(template);
+    const transporter = nodemailer.createTransport(transporterConfig);
 
-  const emailData = getEmailData(user_id, type);
-  if (!emailData) {
-    return response.status(defaultError.status).json(defaultError.message);
-  }
-
-  ejs.renderFile(emailTemplate, emailData, async (error, html) => {
-    if (error) {
+    const emailData = await emailRepository.getEmailData(id, template);
+    if (!emailData) {
       return response.status(defaultError.status).json(defaultError.message);
     }
 
-    await transporter.sendMail({ ...emailConfig, to, html });
-    return response.status(204).json();
-  });
+    ejs.renderFile(emailTemplate, emailData, async (error, html) => {
+      if (error) {
+        return response.status(defaultError.status).json(defaultError.message);
+      }
+
+      await transporter.sendMail({ ...emailConfig, to: emailData.to, html });
+      return response.status(204).json();
+    });
+  }
 }
 
-export { create };
+export default new EmailController();

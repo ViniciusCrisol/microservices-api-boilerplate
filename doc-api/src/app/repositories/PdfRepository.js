@@ -1,37 +1,38 @@
 import path from 'path';
-import databse from '../../utils/fake_database';
+import User from '../models/User';
 
-function joinTemplatePath(fileName) {
-  return path.join(__dirname, '..', 'views', 'documents', fileName);
-}
+class PdfRepository {
+  joinTemplatePath(fileName) {
+    return path.join(__dirname, '..', 'views', 'documents', fileName);
+  }
 
-function getPdfUrl(data) {
-  return `${process.env.BASE_URL}/pdf/${JSON.stringify(data)}`;
-}
+  getPdfUrl(data) {
+    return `${process.env.BASE_URL}/pdf/${JSON.stringify(data)}`;
+  }
 
-function getPdfTemplate(type) {
-  switch (type) {
-    case 'users-report':
-      return joinTemplatePath('users_report.ejs');
-    default:
-      return undefined;
+  getPdfTemplate(template) {
+    switch (template) {
+      case 'users-report':
+        return this.joinTemplatePath('users_report.ejs');
+      default:
+        return undefined;
+    }
+  }
+
+  async getPdfData(userId, template) {
+    switch (template) {
+      case 'users-report':
+        const response = await User.findByPk(userId, {
+          attributes: ['name'],
+        });
+        if (!response) return undefined;
+
+        const { name } = response.dataValues;
+        return { name };
+      default:
+        return undefined;
+    }
   }
 }
 
-function getPdfData(userId, type) {
-  function getUserReportData() {
-    const userData = databse.find((user) => user.id === userId);
-    if (!userData) return undefined;
-
-    return { name: userData.name };
-  }
-
-  switch (type) {
-    case 'users-report':
-      return getUserReportData();
-    default:
-      return undefined;
-  }
-}
-
-export { getPdfUrl, getPdfTemplate, getPdfData };
+export default new PdfRepository();

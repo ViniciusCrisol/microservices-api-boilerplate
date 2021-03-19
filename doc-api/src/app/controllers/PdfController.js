@@ -1,53 +1,49 @@
 import ejs from 'ejs';
 import puppeteer from 'puppeteer';
-import { templateError, defaultError } from '../../utils/ErrorsConfig';
-import {
-  getPdfUrl,
-  getPdfData,
-  getPdfTemplate,
-} from '../repositories/PdfRepository';
+import pdfRepository from '../repositories/PdfRepository';
+import { templateError, defaultError } from '../../errors/messages';
 
-async function create(request, response) {
-  const { template, user_id } = request.body;
+class PdfController {
+  async create(request, response) {
+    const { id } = request.params;
+    const { template } = request.body;
 
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
 
-  const templateExists = getPdfTemplate(template);
-  if (!templateExists) {
-    return response.status(templateError.status).json(templateError.message);
+    const templateExists = pdfRepository.getPdfTemplate(template);
+    if (!templateExists) {
+      return response.status(templateError.status).json(templateError.message);
+    }
+
+    const pdfContent = await pdfRepository.getPdfData(id, template);
+    if (!pdfContent) {
+      return response.status(defaultError.status).json(defaultError.message);
+    }
+
+    const pdfUrl = pdfRepository.getPdfUrl({ ...pdfContent, template });
+    await page.goto(pdfUrl, { waitUntil: 'networkidle0' });
+
+    const pdf = await page.pdf({ printBackground: true, format: 'Letter' });
+    await browser.close();
+
+    response.contentType('application/pdf');
+    return response.send(pdf);
   }
 
-  const pdfContent = getPdfData(user_id, template);
-  if (!pdfContent) {
-    return response.status(defaultError.status).json(defaultError.message);
-  }
+  async get(request, response) {
+    const { data } = request.params;
+    const pdfData = JSON.parse(data);
 
-  const pdfUrl = getPdfUrl({ ...pdfContent, template });
-  await page.goto(pdfUrl, { waitUntil: 'networkidle0' });
-
-  const pdf = await page.pdf({ printBackground: true, format: 'Letter' });
-  await browser.close();
-
-  response.contentType('application/pdf');
-  return response.send(pdf);
-}
-
-async function get(request, response) {
-  const { data } = request.params;
-  const pdfData = JSON.parse(data);
-
-  try {
-    ejs.renderFile(getPdfTemplate(pdfData.template), pdfData, (error, html) => {
-      if (error) throw new Error();
-      return response.send(html);
-    });
-  } catch (catchError) {
-    ejs.renderFile(getPdfTemplate('error-template'), pdfData, (error, html) => {
-      if (error) response.send(catchError);
-      return response.send(html);
-    });
+    ejs.renderFile(
+      pdfRepository.getPdfTemplate(pdfData.template),
+      pdfData,
+      (error, html) => {
+        if (error) return templateError.message;
+        return response.send(html);
+      }
+    );
   }
 }
 
-export { get, create };
+export default new PdfController();

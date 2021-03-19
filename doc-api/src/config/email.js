@@ -1,4 +1,4 @@
-const transporterConfig = {
+export default {
   host: 'smtp.mailtrap.io',
   port: 2525,
   auth: {
@@ -6,5 +6,3 @@ const transporterConfig = {
     pass: 'ba2fddb66d3ef9',
   },
 };
-
-export { transporterConfig };

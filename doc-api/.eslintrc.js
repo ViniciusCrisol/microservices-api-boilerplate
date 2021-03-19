@@ -18,6 +18,7 @@ module.exports = {
     'no-param-reassign': 'off',
     'consistent-return': 'off',
     'prettier/prettier': 'error',
+    'no-case-declarations': 'off',
     'class-methods-use-this': 'off',
     'import/prefer-default-export': 'off',
     'no-unused-vars': ['error', { argsIgnorePattern: 'next' }],
