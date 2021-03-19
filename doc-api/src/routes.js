@@ -2,8 +2,8 @@ import { Router } from 'express';
 import {
   get as getPdf,
   create as createPdf,
-} from './controllers/PdfController';
-import { create as createEmail } from './controllers/EmailController';
+} from './app/controllers/PdfController';
+import { create as createEmail } from './app/controllers/EmailController';
 
 const routes = Router();
 

@@ -1,7 +1,7 @@
 import ejs from 'ejs';
 import nodemailer from 'nodemailer';
-import { transporterConfig } from '../config/EmailConfig';
-import { templateError, defaultError } from '../utils/ErrorsConfig';
+import { transporterConfig } from '../../config/EmailConfig';
+import { templateError, defaultError } from '../../utils/ErrorsConfig';
 import {
   getEmailData,
   getEmailConfig,

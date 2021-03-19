@@ -1,6 +1,6 @@
 import ejs from 'ejs';
 import puppeteer from 'puppeteer';
-import { templateError, defaultError } from '../utils/ErrorsConfig';
+import { templateError, defaultError } from '../../utils/ErrorsConfig';
 import {
   getPdfUrl,
   getPdfData,

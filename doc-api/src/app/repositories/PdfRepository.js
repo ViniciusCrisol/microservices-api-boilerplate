@@ -1,5 +1,5 @@
 import path from 'path';
-import databse from '../utils/fake_database';
+import databse from '../../utils/fake_database';
 
 function joinTemplatePath(fileName) {
   return path.join(__dirname, '..', 'views', 'documents', fileName);
