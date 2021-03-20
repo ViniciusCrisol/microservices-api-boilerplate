@@ -1,5 +1,7 @@
 import ejs from 'ejs';
 import puppeteer from 'puppeteer';
+
+import AppError from '../../errors/AppError';
 import pdfRepository from '../repositories/PdfRepository';
 import { templateError, defaultError } from '../../errors/messages';
 
@@ -13,12 +15,12 @@ class PdfController {
 
     const templateExists = pdfRepository.getPdfTemplate(template);
     if (!templateExists) {
-      return response.status(templateError.status).json(templateError.message);
+      throw new AppError(templateError.message, templateError.status);
     }
 
     const pdfContent = await pdfRepository.getPdfData(id, template);
     if (!pdfContent) {
-      return response.status(defaultError.status).json(defaultError.message);
+      throw new AppError(defaultError.message, defaultError.status);
     }
 
     const pdfUrl = pdfRepository.getPdfUrl({ ...pdfContent, template });

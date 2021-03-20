@@ -1,9 +1,19 @@
 export const defaultError = {
   status: 400,
-  message: { message: 'Error, check your send information, and try again!' },
+  message: 'Error, check your send information, and try again!',
 };
 
 export const templateError = {
   status: 404,
-  message: { message: 'Error, template name not found!' },
+  message: 'Error, template name not found!',
+};
+
+export const emailAlreadyInUse = {
+  status: 400,
+  message: 'Error, email address already in use!',
+};
+
+export const authenticationFail = {
+  status: 401,
+  message: 'Error, incorrect email/password combination!',
 };

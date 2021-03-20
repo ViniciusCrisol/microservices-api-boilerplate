@@ -1,8 +1,9 @@
 import { injectable, inject } from 'tsyringe';
 import { sign } from 'jsonwebtoken';
-
 import authConfig from '@config/auth';
 import AppError from '@shared/errors/AppError';
+import { authenticationFail } from '@shared/errors/messages';
+
 import User from '../infra/typeorm/entities/User';
 import IUsersRepository from '../repositories/IUsersRepository';
 import IHashProvider from '../providers/HashProvider/models/IHashProvider';
@@ -29,9 +30,8 @@ class AuthenticateUserService {
 
   public async execute({ email, password }: IRequest): Promise<IResponse> {
     const user = await this.usersRepository.findByEmail(email);
-
     if (!user) {
-      throw new AppError('Incorrect email/password combination.', 401);
+      throw new AppError(authenticationFail.message, authenticationFail.status);
     }
 
     const passwordMatched = await this.hashProvider.compareHash(
@@ -40,7 +40,7 @@ class AuthenticateUserService {
     );
 
     if (!passwordMatched) {
-      throw new AppError('Incorrect email/password combination.', 401);
+      throw new AppError(authenticationFail.message, authenticationFail.status);
     }
 
     const { secret, expiresIn } = authConfig.jwt;

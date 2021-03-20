@@ -1,5 +1,7 @@
 import ejs from 'ejs';
 import nodemailer from 'nodemailer';
+
+import AppError from '../../errors/AppError';
 import transporterConfig from '../../config/email';
 import emailRepository from '../repositories/EmailRepository';
 import { templateError, defaultError } from '../../errors/messages';
@@ -11,7 +13,7 @@ class EmailController {
 
     const emailConfig = emailRepository.getEmailConfig(template);
     if (!emailConfig) {
-      return response.status(templateError.status).json(templateError.message);
+      throw new AppError(templateError.message, templateError.status);
     }
 
     const emailTemplate = emailRepository.getEmailTemplate(template);
@@ -19,12 +21,12 @@ class EmailController {
 
     const emailData = await emailRepository.getEmailData(id, template);
     if (!emailData) {
-      return response.status(defaultError.status).json(defaultError.message);
+      throw new AppError(defaultError.message);
     }
 
     ejs.renderFile(emailTemplate, emailData, async (error, html) => {
       if (error) {
-        return response.status(defaultError.status).json(defaultError.message);
+        throw new AppError(defaultError.message);
       }
 
       await transporter.sendMail({ ...emailConfig, to: emailData.to, html });

@@ -1,6 +1,7 @@
 import { injectable, inject } from 'tsyringe';
-
 import AppError from '@shared/errors/AppError';
+import { emailAlreadyInUse } from '@shared/errors/messages';
+
 import IBackofficeProvider from '@shared/container/providers/BackofficeProvider/models/IBackofficeProvider';
 import IHashProvider from '../providers/HashProvider/models/IHashProvider';
 import IUsersRepository from '../repositories/IUsersRepository';
@@ -28,7 +29,7 @@ class CreateUserService {
   public async execute({ name, email, password }: IRequest): Promise<User> {
     const checkUserExists = await this.usersRepository.findByEmail(email);
     if (checkUserExists) {
-      throw new AppError('Email address already in use.');
+      throw new AppError(emailAlreadyInUse.message);
     }
 
     const hashedPassword = await this.hashProvider.generateHash(password);
@@ -39,7 +40,6 @@ class CreateUserService {
     });
 
     this.backofficeProvider.sendWelcomeMail(user.id);
-
     return user;
   }
 }

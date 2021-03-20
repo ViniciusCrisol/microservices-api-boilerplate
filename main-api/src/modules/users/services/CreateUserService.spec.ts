@@ -1,4 +1,5 @@
 import AppError from '@shared/errors/AppError';
+
 import FakeBackofficeProvider from '@shared/container/providers/BackofficeProvider/fakes/FakeBackofficeProvider';
 import FakeHashProvider from '../providers/HashProvider/fakes/FakeHashProvider';
 import FakeUsersRepository from '../repositories/fakes/FakeUsersRepository';
@@ -9,7 +10,7 @@ let fakeHashProvider: FakeHashProvider;
 let fakeUsersRepository: FakeUsersRepository;
 let createUser: CreateUserService;
 
-describe('CreateUser', () => {
+describe('Create User', () => {
   beforeEach(() => {
     fakeBackofficeProvider = new FakeBackofficeProvider();
     fakeHashProvider = new FakeHashProvider();
