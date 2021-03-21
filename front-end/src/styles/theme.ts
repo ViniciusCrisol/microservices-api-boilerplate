@@ -5,6 +5,6 @@ const theme = {
     background: 'white',
     primary: 'lightseagreen'
   }
-}
+};
 
-export default theme
+export default theme;

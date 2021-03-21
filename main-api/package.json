@@ -21,6 +21,7 @@
     "jsonwebtoken": "^8.5.1",
     "pg": "^8.5.1",
     "reflect-metadata": "^0.1.13",
+    "request": "^2.88.2",
     "tsyringe": "^4.4.0",
     "typeorm": "^0.2.31",
     "uuidv4": "^6.2.6"
@@ -32,6 +33,7 @@
     "@types/hapi__joi": "^17.1.6",
     "@types/jest": "^26.0.21",
     "@types/jsonwebtoken": "^8.5.1",
+    "@types/request": "^2.48.5",
     "@typescript-eslint/eslint-plugin": "^4.18.0",
     "@typescript-eslint/parser": "^4.18.0",
     "eslint": "^7.22.0",

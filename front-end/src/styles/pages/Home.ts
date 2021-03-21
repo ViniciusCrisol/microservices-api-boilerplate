@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from 'styled-components';
 
 export const Container = styled.div`
   width: 100vw;
@@ -19,14 +19,29 @@ export const Container = styled.div`
     height: 50px;
     width: 200px;
 
-    border: none;
+    cursor: pointer;
+    color: ${({ theme }) => theme.colors.primary};
+    border: 1px solid ${({ theme }) => theme.colors.primary};
 
     display: flex;
     align-items: center;
     justify-content: center;
-
-    cursor: pointer;
-    font-weight: bold;
-    color: ${({ theme }) => theme.colors.primary};
   }
-`
+
+  div.main {
+    margin-top: 30px;
+
+    display: grid;
+    grid-gap: 30px;
+    grid-template-columns: repeat(3, 1fr);
+
+    > div span {
+      font-size: 12px;
+      text-transform: uppercase;
+      color: ${({ theme }) => theme.colors.primary};
+
+      display: block;
+      margin-bottom: 5px;
+    }
+  }
+`;
